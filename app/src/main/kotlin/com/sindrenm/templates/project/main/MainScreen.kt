@@ -5,7 +5,9 @@ package com.sindrenm.templates.project.main
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
@@ -35,6 +37,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun MainScreen() {
   Scaffold(
@@ -43,7 +46,6 @@ internal fun MainScreen() {
       Spacer(
         Modifier
           .navigationBarsPadding()
-          .imePadding()
           .padding(bottom = 12.dp),
       )
     },
@@ -51,6 +53,8 @@ internal fun MainScreen() {
     Column(
       modifier = Modifier
         .fillMaxSize()
+        .consumeWindowInsets(screenPadding) // prevent imePadding from adding nav bar padding
+        .imePadding()
         .verticalScroll(rememberScrollState())
         .padding(screenPadding),
       verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -87,7 +91,7 @@ fun YourTextField(index: Int) {
     singleLine = true,
     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
     keyboardActions = KeyboardActions(
-      onNext = { focusManager.moveFocus(FocusDirection.Next) }
-    )
+      onNext = { focusManager.moveFocus(FocusDirection.Next) },
+    ),
   )
 }
