@@ -2,6 +2,7 @@ package com.sindrenm.templates.project.main
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,14 +10,15 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -27,8 +29,6 @@ import kotlinx.coroutines.launch
 
 @Composable
 internal fun MainScreen() {
-  val state = rememberLazyListState()
-
   Scaffold(
     topBar = {
       Spacer(
@@ -46,14 +46,15 @@ internal fun MainScreen() {
       )
     },
   ) { screenPadding ->
-    LazyColumn(
-      state = state,
-      modifier = Modifier.fillMaxSize(),
-      contentPadding = screenPadding,
+    Column(
+      modifier = Modifier
+        .fillMaxSize()
+        .verticalScroll(rememberScrollState())
+        .padding(screenPadding),
       verticalArrangement = Arrangement.spacedBy(12.dp),
       horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-      items(30) { item -> YourTextField(item) }
+      repeat(30) { item -> YourTextField(item) }
     }
   }
 }
@@ -61,13 +62,14 @@ internal fun MainScreen() {
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
 fun YourTextField(index: Int) {
+  val (value, onValueChange) = remember { mutableStateOf("") }
   val bringIntoViewRequester = remember { BringIntoViewRequester() }
   val coroutineScope = rememberCoroutineScope()
 
   TextField(
-    value = "",
+    value = value,
     label = { Text("Text field $index") },
-    onValueChange = {},
+    onValueChange = onValueChange,
     modifier = Modifier
       .fillMaxWidth()
       .padding(horizontal = 12.dp)
